@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101a2f">
+  <meta name="description" content="Aprende idiomas con lecciones cortas y gratuitas.">
+  <title>SP Idiomas</title>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" href="./logo-sp-idiomas-192.png" type="image/png" sizes="192x192">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <a class="brand" href="#" id="homeLink" aria-label="Ir al inicio">
+        <img class="brand-logo" src="./logo-sp-idiomas-512.png" alt="">
+        <span class="brand-name">SP Idiomas</span>
+      </a>
+      <span class="free-label">Gratis</span>
+    </header>
+
+    <main>
+      <section class="screen" id="homeScreen">
+        <div class="welcome">
+          <p class="eyebrow">Aprende a tu ritmo</p>
+          <h1>¿Qué idioma quieres aprender?</h1>
+          <p>Elige un idioma para ver el curso disponible. Tu progreso se guarda en este dispositivo.</p>
+        </div>
+        <div class="language-grid" id="languageGrid" aria-label="Idiomas disponibles"></div>
+      </section>
+
+      <section class="screen" id="courseScreen" hidden>
+        <button class="back-button" id="backToLanguages" type="button">← Cambiar idioma</button>
+        <div class="welcome course-welcome">
+          <p class="eyebrow" id="courseEyebrow">Curso A1 · Italiano</p>
+          <h1 id="courseTitle">Italiano desde cero</h1>
+          <p>Avanza por unidades con práctica de conversación, gramática, pronunciación y vocabulario. Tu progreso se guarda por nivel en este dispositivo.</p>
+        </div>
+        <section class="learning-tools" aria-labelledby="learningToolsTitle">
+          <h2 id="learningToolsTitle">Práctica y recursos</h2>
+          <div class="resource-actions">
+            <button class="resource-button" id="startDiagnostic" type="button">Hacer diagnóstico</button>
+            <button class="resource-button" id="exportFlashcards" type="button">Exportar fichas para Anki</button>
+          </div>
+          <p class="resource-status" id="resourceStatus" role="status" aria-live="polite"></p>
+          <details class="resource-panel">
+            <summary>Audio, pronunciación y escucha</summary>
+            <div class="resource-panel-content">
+              <p id="pronunciationNotes"></p>
+              <p class="ipa-note" id="ipaNotes"></p>
+              <p id="listeningInstructions"></p>
+              <button class="secondary-button" id="playListeningSample" type="button">Escuchar práctica guiada</button>
+              <p class="listening-script" id="listeningScript"></p>
+            </div>
+          </details>
+          <details class="resource-panel">
+            <summary>Errores comunes de hispanohablantes</summary>
+            <ul id="commonPitfalls" class="resource-list"></ul>
+          </details>
+          <details class="resource-panel">
+            <summary>Guía rápida para docentes</summary>
+            <div class="resource-panel-content" id="teacherGuide"></div>
+          </details>
+          <details class="resource-panel">
+            <summary>Prompt maestro para crear material complementario</summary>
+            <div class="resource-panel-content">
+              <p>Adapta las actividades y lecturas al nivel y al vocabulario ya estudiados.</p>
+              <label class="prompt-lesson-label" for="promptLessonSelect">Lección de referencia</label>
+              <select id="promptLessonSelect" class="prompt-lesson-select"></select>
+              <textarea id="masterPrompt" class="resource-textarea" readonly rows="9" aria-label="Prompt maestro"></textarea>
+              <button class="secondary-button" id="copyMasterPrompt" type="button">Copiar prompt</button>
+            </div>
+          </details>
+        </section>
+        <section class="level-path-section" aria-labelledby="levelPathTitle">
+          <h2 id="levelPathTitle">Tu progresión por niveles</h2>
+          <div class="level-path" id="levelPath"></div>
+        </section>
+        <div class="course-progress">
+          <div class="course-progress-copy">
+            <strong>Tu avance</strong>
+            <span id="courseProgressText">0 de 2 lecciones</span>
+          </div>
+          <div class="progress-bar" role="progressbar" aria-label="Progreso del curso"
+            aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="courseProgressBar">
+            <div class="progress-fill" id="courseProgressFill"></div>
+          </div>
+        </div>
+        <div class="lesson-list" id="lessonList"></div>
+        <button class="review-button" id="startReview" type="button">
+          <span aria-hidden="true">🔁</span>
+          <span><strong>Repasar errores</strong><small id="reviewCount">Aún no tienes elementos para repasar</small></span>
+          <span aria-hidden="true">›</span>
+        </button>
+      </section>
+
+      <dialog class="assessment-dialog" id="assessmentDialog" aria-labelledby="assessmentTitle">
+        <div class="assessment-header">
+          <div>
+            <p class="eyebrow" id="assessmentEyebrow">Evaluación A1</p>
+            <h2 id="assessmentTitle"></h2>
+          </div>
+          <button class="dialog-close" id="closeAssessment" type="button" aria-label="Cerrar evaluación">×</button>
+        </div>
+        <p class="assessment-progress" id="assessmentProgress"></p>
+        <div id="assessmentQuestionArea">
+          <h3 id="assessmentQuestion"></h3>
+          <div class="options-container" id="assessmentOptions" role="group" aria-label="Opciones de respuesta"></div>
+          <div class="assessment-feedback" id="assessmentFeedback" role="status" aria-live="polite"></div>
+        </div>
+        <div id="assessmentResults" class="assessment-results" hidden></div>
+        <footer class="assessment-footer">
+          <button class="check-btn" id="checkAssessmentAnswer" type="button" disabled>Comprobar</button>
+          <button class="check-btn continue-btn" id="nextAssessmentQuestion" type="button" hidden>Siguiente</button>
+          <button class="check-btn continue-btn" id="finishAssessment" type="button" hidden>Volver al curso</button>
+        </footer>
+      </dialog>
+
+      <section class="screen lesson-screen" id="lessonScreen" hidden>
+        <div class="header">
+          <button class="close-btn" id="exitLesson" type="button" aria-label="Volver al curso">←</button>
+          <div class="progress-bar" role="progressbar" aria-label="Progreso de la lección"
+            aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progressBar">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+          <span class="step-count" id="stepCount"></span>
+        </div>
+
+        <div class="quiz-card">
+          <aside class="lesson-objective">
+            <strong>Objetivo de la lección</strong>
+            <p id="lessonObjective"></p>
+          </aside>
+          <p class="eyebrow exercise-type" id="exerciseType"></p>
+          <h1 id="questionText" tabindex="-1"></h1>
+          <button class="audio-btn" id="audioBtn" type="button">
+            <span aria-hidden="true">🔊</span> Escuchar
+          </button>
+          <div class="answer-area" id="answerArea">
+            <div class="options-container" id="optionsContainer" role="group" aria-label="Opciones de respuesta"></div>
+          </div>
+        </div>
+
+        <footer class="footer">
+          <div id="feedbackText" class="feedback" role="status" aria-live="polite"></div>
+          <button class="check-btn" id="checkBtn" type="button" disabled>Comprobar</button>
+          <button class="check-btn continue-btn" id="continueBtn" type="button" hidden>Continuar</button>
+        </footer>
+      </section>
+    </main>
+    <p class="offline-note" id="offlineNote" role="status"></p>
+  </div>
+
+  <script src="./curriculum-a1-it.js" defer></script>
+  <script src="./curriculum-a1-en.js" defer></script>
+  <script src="./curriculum-a1-pt.js" defer></script>
+  <script src="./curriculum-a1-es.js" defer></script>
+  <script src="./curriculum-a1-fr.js" defer></script>
+  <script src="./curriculum-a1-de.js" defer></script>
+  <script src="./curriculum-a1-zh.js" defer></script>
+  <script src="./curriculum-a1-ja.js" defer></script>
+  <script src="./curriculum-a1-ar.js" defer></script>
+  <script src="./curriculum-a1-hi.js" defer></script>
+  <script src="./curriculum-a2-it.js" defer></script>
+  <script src="./curriculum-a2-other.js" defer></script>
+  <script src="./curriculum-b1.js" defer></script>
+  <script src="./curriculum-b2-c2.js" defer></script>
+  <script src="./learning-resources.js" defer></script>
+  <script src="./script.js" defer></script>
+</body>
+</html>
